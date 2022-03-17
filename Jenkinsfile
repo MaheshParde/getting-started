@@ -22,11 +22,11 @@ pipeline {
 		sh 'yarn'
 		}	
 	}
-	stage('Test') {
+	/*stage('Test') {
 		steps{
 		sh 'npm test'
 		}
-	}
+	}*/
 	stage('Building image') {
 		steps{
 			script{
