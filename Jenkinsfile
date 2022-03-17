@@ -1,22 +1,47 @@
 pipeline {
-    options {
-        timeout(time: 1, unit: 'HOURS')
-    }
-    agent {
-        label 'ubuntu-1804 && amd64 && docker'
-    }
-    stages {
-        stage('build and push') {
-            when {
-                branch 'master'
-            }
-            sh "docker build -t docker/getting-started ."
+    
+	  agent any
+  tools {nodejs "node"}
 
-            steps {
-                withDockerRegistry([url: "", credentialsId: "dockerbuildbot-index.docker.io"]) {
-                    sh("docker push docker/getting-started")
-                }
-            }
-        }
-    }
-}
+	environment{
+	registry="maheshparde/rect-test"
+	registryCredential='dockerhub'
+	dockerImage=''
+	}
+    
+    //def registry = 'mrchelsea/testing-docker'
+    //def registryCredential = 'dockerhub'
+	stages{
+	stage('Git') {
+		steps{
+		git 'https://github.com/MaheshParde/getting-started.git'
+		}	
+	}
+	stage('Build') {
+		steps{
+		sh 'yarn'
+		}	
+	}
+	stage('Test') {
+		steps{
+		sh 'npm test'
+		}
+	}
+	stage('Building image') {
+		steps{
+			script{
+			 	dockerImage=docker.build registry	
+			}
+		}
+	}
+	stage('Registring image') {
+		steps{
+			script{
+				docker.withRegistry('',registryCredential){
+				dockerImage.push()
+				}
+			}
+		}
+	}
+	}
+    
