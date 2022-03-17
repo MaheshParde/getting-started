@@ -1,5 +1,6 @@
 FROM node:12-alpine
 RUN apk add --no-cache python2 g++ make
+RUN mkdir -p /app/src/
 WORKDIR /app
 COPY . /app/src/
 RUN yarn install --production
