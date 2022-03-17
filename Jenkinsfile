@@ -30,7 +30,7 @@ pipeline {
 	stage('Building image') {
 		steps{
 			script{
-			 	dockerImage=docker.build registry	
+			 	sh "docker build -t maheshparde/rect-test ."	
 			}
 		}
 	}
@@ -38,7 +38,7 @@ pipeline {
 		steps{
 			script{
 				docker.withRegistry('',registryCredential){
-				dockerImage.push()
+				sh "docker push maheshparde/rect-test"
 				}
 			}
 		}
